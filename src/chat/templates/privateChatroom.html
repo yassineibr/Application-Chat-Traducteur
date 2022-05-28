@@ -37,7 +37,6 @@
     <script>
         const destName = JSON.parse(document.getElementById('dest-name').textContent)
         const destId = JSON.parse(document.getElementById('dest-id').textContent)
-        // const user_username = JSON.parse(document.getElementById('user_username').textContent)
         const messageInputDom = document.getElementById('input'); 
 
         const chatSocket = new WebSocket(
@@ -66,7 +65,6 @@
 
         chatSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-            // console.log(data);
             document.querySelector('#chat-text').value += (data.username + " > " + data.message + "\n");
         }
     </script>

@@ -47,7 +47,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
-    def get_userProfile_id_fr_userId(self, userId ):
+    def get_userProfile_id_fr_userId(self, userId):
         return UserProfile.objects.get(user__pk = userId).id
 
     @database_sync_to_async
@@ -55,15 +55,11 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
         return list(PrivateMessages.objects.filter(chatroomname = room_name ))
     
     @database_sync_to_async
-    def get_messages_text(self, msg ):
-        return msg.text
+    def get_text_username_from_msg(self, msg : PrivateMessages) :
+        return msg.text, msg.sender.user.username
 
     @database_sync_to_async
-    def get_messages_username(self, msg ):
-        return msg.sender.user.username
-
-    @database_sync_to_async
-    def setNewPrivateMessages(self, text ):
+    def setNewPrivateMessages(self, text):
         PrivateMessages.objects.create(
             chatroomname = self.room_group_name,
             sender=UserProfile.objects.get(pk=self.user_id),
@@ -87,10 +83,8 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
         
         await self.accept()
 
-
         for msg in await self.getPrivateMessages(self.room_group_name) :
-            message = msg.text
-            username = await self.get_messages_username(msg)
+            message, username = await self.get_text_username_from_msg(msg)
             await self.send(text_data = json.dumps({
                 'message' : message,
                 'username': username,
@@ -124,5 +118,3 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
             'message' : message,
             'username': username,
         }))
-
-

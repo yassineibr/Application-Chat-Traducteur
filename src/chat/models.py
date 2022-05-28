@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from googletrans import LANGUAGES
 
 def get_User():
     return UserProfile.objects.get(id = 1)
@@ -9,11 +10,12 @@ def get_User():
 class UserProfile(models.Model):
     """
         Model for User Profile
-
     """
 
+    langChoice = [ (key, LANGUAGES[key].title()) for key in LANGUAGES.keys()]
+
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    languageKey = models.CharField(max_length = 10)
+    languageKey = models.CharField(default="en", max_length = 10, choices=langChoice)
 
     def __str__(self) -> str:
         return self.user.username
@@ -33,7 +35,7 @@ class TranslatedPrivateMessages(models.Model):
     """
         Model for Translated Private Messages
     """
-    srcMessage = models.ForeignKey(PrivateMessages, on_delete=models.DO_NOTHING)
+    srcMessage = models.ForeignKey(PrivateMessages, on_delete=models.CASCADE)
     text = models.CharField(max_length = 10000)
 
 # class ChatChannel(models.Model):
