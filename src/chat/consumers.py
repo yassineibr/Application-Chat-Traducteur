@@ -99,6 +99,39 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
     def get_userProfile(self, user_id):
         return UserProfile.objects.get(user__pk=user_id)
 
+    async def sendOldMessages(self):
+        for msg in await self.getPrivateMessages(self.room_group_name) :
+            message, username = await self.get_text_username_from_msg(msg)
+            if self.toTranslate:
+                try :
+                    translated_text, username = await self.get_translated_text_username_from_msg(msg)
+                    if self.src_user.languageKey == msg.sender.languageKey:
+                        await self.send(text_data = json.dumps({
+                            'text' : message,
+                            'username' : username,
+                            'timestamp' : msg.timestamp.isoformat(),
+                        }))
+                    else : 
+                        await self.send(text_data = json.dumps({
+                            'text' : translated_text,
+                            'username' : username,
+                            'timestamp' : msg.timestamp.isoformat(),
+                        }))
+                except:
+                    await self.send(text_data = json.dumps({
+                        'text' : message,
+                        'username': username,
+                        'timestamp' : msg.timestamp.isoformat(),
+                    }))
+
+            else : 
+                await self.send(text_data = json.dumps({
+                    'text' : message,
+                    'username': username,
+                    'timestamp' : msg.timestamp.isoformat(),
+                }))
+
+
     async def connect(self):
         self.user = self.scope['user']
         self.dest_id = self.scope['url_route']['kwargs']['dest_id']
@@ -119,32 +152,8 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
         
         await self.accept()
 
-        for msg in await self.getPrivateMessages(self.room_group_name) :
-            message, username = await self.get_text_username_from_msg(msg)
-            if self.toTranslate:
-                try :
-                    translated_text, username = await self.get_translated_text_username_from_msg(msg)
-                    if self.src_user.languageKey == msg.sender.languageKey:
-                        await self.send(text_data = json.dumps({
-                            'message' : message,
-                            'username' : username,
-                        }))
-                    else : 
-                        await self.send(text_data = json.dumps({
-                            'message' : translated_text,
-                            'username' : username,
-                        }))
-                except:
-                    await self.send(text_data = json.dumps({
-                        'message' : message,
-                        'username': username,
-                    }))
+        # await self.sendOldMessages()
 
-            else : 
-                await self.send(text_data = json.dumps({
-                    'message' : message,
-                    'username': username,
-                }))
             
 
     async def disconnect(self, close_code):
@@ -179,16 +188,19 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
             translated_text = trans_msg.text
             if self.src_user.languageKey == new_msg.sender.languageKey:
                 await self.send(text_data = json.dumps({
-                    'message' : text,
+                    'text' : text,
                     'username' : username,
+                    'timestamp' : new_msg.timestamp.isoformat(),
                 }))
             else : 
                 await self.send(text_data = json.dumps({
-                    'message' : translated_text,
+                    'text' : translated_text,
                     'username' : username,
+                    'timestamp' : new_msg.timestamp.isoformat(),
                 }))
         else : 
             await self.send(text_data = json.dumps({
-                'message' : text,
+                'text' : text,
                 'username': username,
+                'timestamp' : new_msg.timestamp.isoformat(),
             }))

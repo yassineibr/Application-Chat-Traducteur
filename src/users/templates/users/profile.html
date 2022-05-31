@@ -1,9 +1,10 @@
 {% extends "chat/base.html" %}
 {% load crispy_forms_tags %}
+{% load tags %}
 {% block content %}
     <div class="content-section">
       <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.userprofile.image.url }}">
+        <img class="rounded-circle account-img" src="https://bootdey.com/img/Content/avatar/avatar{{ user.userprofile.pk|modulo:8 |add:1}}.png">
         <div class="media-body">
           <h2 class="account-heading">{{ user.username }}</h2>
           <p class="text-secondary">{{ user.email }}</p>

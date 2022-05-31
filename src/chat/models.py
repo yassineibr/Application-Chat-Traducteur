@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     langChoice = [ (key, LANGUAGES[key].title()) for key in LANGUAGES.keys()]
 
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    languageKey = models.CharField(default="en", max_length = 10, choices=langChoice)
+    languageKey = models.CharField(default="en", max_length = 10, choices=langChoice, verbose_name="Language")
 
     def __str__(self) -> str:
         return self.user.username
