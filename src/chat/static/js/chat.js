@@ -1,5 +1,6 @@
 const destName = JSON.parse(document.getElementById("dest-name").textContent);
 const destId = JSON.parse(document.getElementById("dest-id").textContent);
+const userId = JSON.parse(document.getElementById("user-id").textContent);
 const messageInputDom = document.getElementById("input");
 const messagesDOM = document.getElementById("messagesBox");
 
@@ -18,8 +19,6 @@ function sendFunc(ev) {
     })
   );
   messageInputDom.value = "";
-  // Scroll down TODO
-  messagesDOM.scrollTop = messagesDOM.scrollHeight;
 }
 
 messageInputDom.addEventListener("keypress", (ev) => {
@@ -37,20 +36,20 @@ chatSocket.onmessage = (e) => {
   const dateOptions = {
     // dateStyle: "full",
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
-    hour12: false,
+    hour12: true,
   };
   const newTimestamp = new Date(data.timestamp).toLocaleString(
     "en",
-    // dateOptions
+    dateOptions
   );
   if (data.username != destName) {
     msg = `<div class="chat-message-right mb-4">
                     <div>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                        <img src="https://bootdey.com/img/Content/avatar/avatar${parseInt(destId) % 8 + 1 }.png"
                             class="rounded-circle mr-1" alt="" width="40" height="40">
                     </div>
                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
@@ -59,20 +58,23 @@ chatSocket.onmessage = (e) => {
                     </div>
                     <div class="text-muted small text-nowrap mt-2">${newTimestamp}</div>
                 </div>`;
+    messagesDOM.innerHTML += msg;
   } else {
     msg = `<div class="chat-message-left mb-4">
                     <div>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                        <img src="https://bootdey.com/img/Content/avatar/avatar${parseInt(userId) % 8 + 1}.png"
                             class="rounded-circle mr-1" alt="" width="40" height="40">
                     </div>
-                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
                         <div class="font-weight-bold mb-1">${data.username}</div>
                         ${data.text}
                     </div>
                     <div class="text-muted small text-nowrap mt-2">${newTimestamp}</div>
                 </div>`;
+    messagesDOM.innerHTML += msg;
+    // Scroll down When the user sent a message 
+    messagesDOM.scrollTop = messagesDOM.scrollHeight;
   }
-  messagesDOM.innerHTML += msg;
 
   //   document.querySelector("#chat-text").value += data.username + " > " + data.message + "\n";
 };

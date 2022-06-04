@@ -5,9 +5,10 @@
 <link rel="stylesheet" type="text/css" href="{% static 'chat/chat.css' %}">
 <script src="{% static 'js/chat.js'%}" defer></script>
 <main class="content">
-    <div class="container p-0">
+    <div class="container p-0 vh-100">
         <h1 class="h3 mb-3">Messages</h1>
-        <div class="card">
+
+        <div class="card h-100">
             <div class="row g-0">
                 <div class="col-12 col-lg-5 col-xl-3 border-right">
 
@@ -117,5 +118,6 @@
     </div>
     {{ dest_name|json_script:"dest-name"}}
     {{ dest_id|json_script:"dest-id"}}
+    {{ user.userprofile.pk|json_script:"user-id"}}
 </main>
 {% endblock content%}
