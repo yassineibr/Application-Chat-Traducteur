@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http.response import Http404
+from django.shortcuts import render 
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, PrivateMessages, TranslatedPrivateMessages
 
@@ -10,9 +11,20 @@ def index(request):
 
 @login_required
 def room(request, room_name):
-    return render(request, 'chatroom.html', {
+    return render(request, 'chat/groupChat.html', {
         'room_name' : room_name,
     })
+
+@login_required
+def prvRooms(request):
+    try : 
+        users = UserProfile.objects.all()[1:]
+            
+        return render(request, 'chat/prvChatrooms.html', {
+            'user_profiles' : users,
+        })
+    except Exception as e:
+        raise Http404("User not found")
 
 @login_required
 def privateRoom(request, dest_id):
