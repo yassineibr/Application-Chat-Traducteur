@@ -49,7 +49,7 @@ chatSocket.onmessage = (e) => {
   if (data.username != destName) {
     msg = `<div class="chat-message-right mb-4">
                     <div>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar${parseInt(destId) % 8 + 1 }.png"
+                        <img src="/media/avatars/avatar${parseInt(userId) % 8 + 1 }.png"
                             class="rounded-circle mr-1" alt="" width="40" height="40">
                     </div>
                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
@@ -61,8 +61,8 @@ chatSocket.onmessage = (e) => {
     messagesDOM.innerHTML += msg;
   } else {
     msg = `<div class="chat-message-left mb-4">
-                    <div>
-                        <img src="https://bootdey.com/img/Content/avatar/avatar${parseInt(userId) % 8 + 1}.png"
+                  <div>
+                      <img src="/media/avatars/avatar${parseInt(destId) % 8 + 1}.png"
                             class="rounded-circle mr-1" alt="" width="40" height="40">
                     </div>
                     <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
@@ -72,9 +72,11 @@ chatSocket.onmessage = (e) => {
                     <div class="text-muted small text-nowrap mt-2">${newTimestamp}</div>
                 </div>`;
     messagesDOM.innerHTML += msg;
-    // Scroll down When the user sent a message 
-    messagesDOM.scrollTop = messagesDOM.scrollHeight;
   }
+  // Scroll down When the user sent a message 
+  setTimeout(() => { 
+    messagesDOM.scrollTop = messagesDOM.scrollHeight; 
+  }, 50);
 
   //   document.querySelector("#chat-text").value += data.username + " > " + data.message + "\n";
 };

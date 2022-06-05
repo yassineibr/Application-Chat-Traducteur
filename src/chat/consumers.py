@@ -97,6 +97,10 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_userProfile(self, user_id):
+        return UserProfile.objects.get(pk=user_id)
+
+    @database_sync_to_async
+    def get_userProfile_withUserId(self, user_id):
         return UserProfile.objects.get(user__pk=user_id)
 
     async def sendOldMessages(self):
@@ -136,7 +140,7 @@ class PrivateChatRoomConsumer(AsyncWebsocketConsumer):
         self.user = self.scope['user']
         self.dest_id = self.scope['url_route']['kwargs']['dest_id']
         self.dest_user = await self.get_userProfile(self.dest_id)
-        self.src_user = await self.get_userProfile(self.user.id)
+        self.src_user = await self.get_userProfile_withUserId(self.user.id)
         self.user_id = self.src_user.id
         self.translate = await self.toTranslate()
 
