@@ -24,7 +24,7 @@ hyperframe==5.2.0
 hyperlink==21.0.0
 idna==2.10
 incremental==21.3.0
-joblib==1.1.0
+joblib==1.2.0
 nltk==3.7
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
